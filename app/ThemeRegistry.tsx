@@ -8,7 +8,7 @@ import React, {useState} from "react";
 
 // This implementation is from emotion-js
 // https://github.com/emotion-js/emotion/issues/2928#issuecomment-1319747902
-export default function ThemeRegistry(props) {
+export default function ThemeRegistry(props: { options: any, children: React.ReactNode }) {
     const { options, children } = props;
 
     const [{ cache, flush }] = useState(() => {
