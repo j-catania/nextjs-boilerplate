@@ -66,11 +66,18 @@ jobs:
       if: ${{ inputs.version == '' }}
       run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
     - name: Update deployment status (success)
-      if: ${{ inputs.version == '' && (success() || failure()) }}
+      if: ${{ inputs.version == '' && success() }}
       uses: chrnorm/deployment-status@v2
       with:
         token: ${{ github.token }}
-        state: success() && 'success' || 'failure'
+        state: success
+        deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+    - name: Update deployment status (failure)
+      if: ${{ inputs.version == '' && failure() }}
+      uses: chrnorm/deployment-status@v2
+      with:
+        token: ${{ github.token }}
+        state: failure
         deployment-id: ${{ steps.deployment.outputs.deployment_id }}
 
 
@@ -114,11 +121,18 @@ jobs:
       - name: Deploy Vercel in Production
         run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: Update deployment status (success)
-        if: success() || failure()
+        if: success()
         uses: chrnorm/deployment-status@v2
         with:
           token: ${{ github.token }}
-          state: success() && 'success' || 'failure'
+          state: success
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+      - name: Update deployment status (failure)
+        if: failure()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: ${{ github.token }}
+          state: failure
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
 
       - name: Push Tag
