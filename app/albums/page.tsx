@@ -18,7 +18,7 @@ async function getData(): Promise<Album[]> {
 }
 
 export default async function Home() {
-    const data = await getData()
+    const data = await getData();
     return (
         <List>
             {data.map((post) => (

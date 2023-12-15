@@ -24,6 +24,7 @@ run-name: ${{ inputs.version != '' && format('Release {0}', inputs.version) || g
 
 permissions:
   contents: write
+  deployments: write
 
 jobs:
   build:
