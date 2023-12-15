@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: Preview
-      url: https://plop.app/
+      url: https://nextjs-boilerplate-j-catania-julien-catanias-projects.vercel.app/
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js 18.x
