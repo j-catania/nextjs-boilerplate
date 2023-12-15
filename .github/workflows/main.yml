@@ -20,7 +20,7 @@ on:
 concurrency:
   group: ${{ inputs.version != '' && 'release' || 'ci' }}
 
-run-name: ${{ inputs.version != '' && fromat('Release {0}', inputs.version) || github.event.head_commit.message }}
+run-name: ${{ inputs.version != '' && format('Release {0}', inputs.version) || github.event.head_commit.message }}
 
 permissions:
   contents: write
