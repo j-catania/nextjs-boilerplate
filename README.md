@@ -1,7 +1,7 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 [![Main CI](https://github.com/j-catania/nextjs-boilerplate/actions/workflows/main.yml/badge.svg)](https://github.com/j-catania/nextjs-boilerplate/actions/workflows/main.yml)
-![GitHub release (with filter)](https://img.shields.io/github/v/release/j-catania/nextjs-boilerplate)
+[![GitHub release (with filter)](https://img.shields.io/github/v/release/j-catania/nextjs-boilerplate)](https://github.com/j-catania/nextjs-boilerplate/releases/latest)
 
 
 ## Getting Started
