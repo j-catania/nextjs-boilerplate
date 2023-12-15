@@ -17,9 +17,13 @@ on:
         required: false
         description: Version to release
 
+concurrency:
+  group: ${{ inputs.version != '' && 'release' || 'ci' }}
+
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
