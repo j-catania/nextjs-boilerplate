@@ -61,8 +61,14 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 18.x
+
+    - uses: pnpm/action-setup@v2
+      name: Install pnpm
+      id: pnpm-install
+      with:
+        version: 8
     - name: Install Vercel CLI
-      run: npm install --global vercel@latest
+      run: pnpm add --global vercel@latest
     - name: Pull Vercel Preview Environment Information
       run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
     - name: Build Project Artifacts
@@ -101,10 +107,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      - name: Build project
-        run: npm run build
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 8
       - name: Install Vercel CLI
-        run: npm install --global vercel@latest
+        run: pnpm add --global vercel@latest
       - name: Release
         id: release
         run: |
