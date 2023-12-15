@@ -41,37 +41,47 @@ jobs:
       with:
         version: 8
         run_install: true
-    - run: npm run build
+    - run: pnpm build
+      name: Build
+    - run: pnpm lint
+      name: Lint
+    # - run: pnpm test
+
+  preview:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ inputs.version == '' }}
+    environment:
+        name: Preview
+        url: https://nextjs-boilerplate-j-catania-julien-catanias-projects.vercel.app/
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
     - name: Install Vercel CLI
-      if: ${{ inputs.version == '' }}
       run: npm install --global vercel@latest
     - name: Pull Vercel Preview Environment Information
-      if: ${{ inputs.version == '' }}
       run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
     - name: Build Project Artifacts
-      if: ${{ inputs.version == '' }}
       run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
     - uses: chrnorm/deployment-action@v2
       name: Create GitHub deployment
-      if: ${{ inputs.version == '' }}
       id: deployment
       with:
         token: ${{ github.token }}
         environment: Preview
-        environment-url: https://nextjs-boilerplate-j-catania-julien-catanias-projects.vercel.app/
     - name: Deploy Project Artifacts to Vercel in Preview
-      if: ${{ inputs.version == '' }}
       run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
     - name: Update deployment status (success)
-      if: ${{ inputs.version == '' && success() }}
       uses: chrnorm/deployment-status@v2
       with:
         token: ${{ github.token }}
         state: success
         deployment-id: ${{ steps.deployment.outputs.deployment_id }}
     - name: Update deployment status (failure)
-      if: ${{ inputs.version == '' && failure() }}
       uses: chrnorm/deployment-status@v2
       with:
         token: ${{ github.token }}
@@ -112,7 +122,7 @@ jobs:
         id: deployment
         with:
           token: ${{ github.token }}
-          environment: production
+          environment: Production
           environment-url: https://nextjs-boilerplate-eta-sable.vercel.app/
       - name: Deploy Vercel in Production
         run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
