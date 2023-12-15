@@ -11,14 +11,20 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      version:
+        required: false
+        description: Version to release
+
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Use Node.js 18.x
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: 18.x
     - uses: pnpm/action-setup@v2
@@ -29,9 +35,49 @@ jobs:
     - run: npm run build
     - name: Install Vercel CLI
       run: npm install --global vercel@latest
-    - name: Pull Vercel Environment Information
+    - name: Pull Vercel Preview Environment Information
       run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
     - name: Build Project Artifacts
       run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-    - name: Deploy Project Artifacts to Vercel
+    - name: Deploy Project Artifacts to Vercel in Preview
       run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+
+
+  release:
+    name: Release ${{ inputs.version}}
+    if: ${{ inputs.version != '' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: true
+      - run: npm run build
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Release
+        id: release
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          VERSION=`npm version ${{ github.event.inputs.version }}`
+          VERSION=${VERSION:1}
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Pull Vercel Production Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Project Artifacts to Vercel in Production
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Push Tag
+        run: git push --tags
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          generateReleaseNotes: true
+          tag: v${{ steps.release.outputs.VERSION }}
