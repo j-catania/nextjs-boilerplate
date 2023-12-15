@@ -69,7 +69,7 @@ jobs:
       uses: chrnorm/deployment-status@v2
       with:
         token: ${{ github.token }}
-        state: ${{ success() && 'success' || 'failure' }}
+        state: success() && 'success' || 'failure'
         deployment-id: ${{ steps.deployment.outputs.deployment_id }}
 
 
@@ -117,7 +117,7 @@ jobs:
         uses: chrnorm/deployment-status@v2
         with:
           token: ${{ github.token }}
-          state: ${{ success() && 'success' || 'failure' }}
+          state: success() && 'success' || 'failure'
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
 
       - name: Push Tag
