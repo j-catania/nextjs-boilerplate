@@ -30,9 +30,6 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    environment:
-      name: Preview
-      url: https://nextjs-boilerplate-j-catania-julien-catanias-projects.vercel.app/
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js 18.x
@@ -61,7 +58,8 @@ jobs:
       id: deployment
       with:
         token: ${{ github.token }}
-        environment: production
+        environment: Preview
+        environment-url: https://nextjs-boilerplate-j-catania-julien-catanias-projects.vercel.app/
     - name: Deploy Project Artifacts to Vercel in Preview
       if: ${{ inputs.version == '' }}
       run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
@@ -86,9 +84,6 @@ jobs:
     if: ${{ inputs.version != '' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     needs: build
-    environment:
-      name: Production
-      url: https://nextjs-boilerplate-eta-sable.vercel.app/
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 18.x
@@ -118,6 +113,7 @@ jobs:
         with:
           token: ${{ github.token }}
           environment: production
+          environment-url: https://nextjs-boilerplate-eta-sable.vercel.app/
       - name: Deploy Vercel in Production
         run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: Update deployment status (success)
